@@ -6,7 +6,6 @@ package goph
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"time"
@@ -180,7 +179,7 @@ func (c Client) Upload(localPath string, remotePath string) (err error) {
 	}
 	defer remote.Close()
 
-	_, err = io.Copy(remote, local)
+	_, err = remote.ReadFrom(local)
 	return
 }
 
@@ -205,7 +204,7 @@ func (c Client) Download(remotePath string, localPath string) (err error) {
 	}
 	defer remote.Close()
 
-	if _, err = io.Copy(local, remote); err != nil {
+	if _, err = remote.WriteTo(local); err != nil {
 		return
 	}
 
